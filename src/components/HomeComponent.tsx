@@ -71,8 +71,12 @@ const HomeComponent = () => {
     navigate("/profile");
   };
 
-  const onTickerRemove = (id: string) => {};
-  const onSave = () => {};
+  const onTickerRemove = (id: string) => {
+    console.log(id);
+  };
+  const onSave = () => {
+    console.log(user);
+  };
   const clearAll = () => {};
   const onTickerClick = async (ticker: string) => {
     try {

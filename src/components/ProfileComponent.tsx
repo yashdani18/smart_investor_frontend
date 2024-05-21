@@ -1,6 +1,5 @@
 import axios from "axios";
-import React, { useState, ChangeEvent, useEffect } from "react";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UsersTickers from "./UsersTickers";
 
@@ -143,7 +142,9 @@ const ProfileComponent: React.FC = () => {
     fetchUser();
   }, []);
 
-  const onTickerClick = (ticker: string) => {};
+  const onTickerClick = (ticker: string) => {
+    console.log(ticker);
+  };
 
   return (
     <div className="mx-4">

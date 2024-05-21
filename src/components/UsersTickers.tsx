@@ -60,7 +60,7 @@ const UsersTickers = ({
           )}
         </div>
         <div className="tickers flex flex-wrap">
-          {usersTickers.map((ticker, index) => (
+          {usersTickers.map((ticker) => (
             <div key={ticker["_id"]} className="border-2 border-slate-700 m-2">
               <button className="ticker py-2 px-8" onClick={() => handleTickerClick(ticker["ticker"])}>
                 {ticker["ticker"]}

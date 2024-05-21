@@ -1,5 +1,4 @@
 import NavbarComponent from "./NavbarComponent";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import USP from "./USP";
 
 const LandingComponent = () => {
