@@ -80,7 +80,7 @@ const HomeComponent = () => {
   const clearAll = () => {};
   const onTickerClick = async (ticker: string) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/detail/" + ticker);
+      const response = await axios.get(`${rootURL}/api/detail/` + ticker);
       console.log(response.data);
       setDetail(response.data);
     } catch (error) {
