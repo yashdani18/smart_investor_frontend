@@ -13,7 +13,7 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build docker image
-        run: docker build -t yashdani27/si_frontend .
+        run: docker build -t yashdani27/si_frontend --build-arg VITE_APP_ENV='production' --build-arg VITE_APP_SERVER_ROOT_URL='${{ secrets.VITE_APP_SERVER_ROOT_URL }}' .
       - name: Publish image to dockerhub
         run: docker push yashdani27/si_frontend:latest
 
