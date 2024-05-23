@@ -7,7 +7,7 @@ type InputState = string;
 const LoginComponent: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("error");
-  const [username, setUsername] = useState<InputState>("yashdani18@gmail.com");
+  const [username, setUsername] = useState<InputState>("");
   const [password, setPassword] = useState<InputState>("");
 
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ const LoginComponent: React.FC = () => {
           <div className="row-password">
             <h6 className="input-label mt-4">Password</h6>
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className="border-2 border-zinc-950 text-center"
               value={password}

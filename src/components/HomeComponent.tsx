@@ -238,7 +238,7 @@ const HomeComponent = () => {
                   <h1 className="text-lg text-center">Annual results</h1>
                   <table className="table-auto w-full text-center">
                     <thead>
-                      <th className="border-2 border-slate-700">Quarters</th>
+                      <th className="border-2 border-slate-700">Years</th>
                       {detail.annualData.years.map((year) => (
                         <th key={year} className="border-2 border-slate-700">
                           {year}
