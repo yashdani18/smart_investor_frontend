@@ -90,7 +90,7 @@ const ProfileComponent: React.FC = () => {
     let newUser = { ...user };
     newUser.watchlist = usersTickers;
     axios
-      .post(`${rootURL}/api/profile`, newUser)
+      .put(`${rootURL}/api/profile`, newUser)
       .then((response) => {
         console.log(response.data);
       })

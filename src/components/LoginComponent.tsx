@@ -8,7 +8,7 @@ const LoginComponent: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("error");
   const [username, setUsername] = useState<InputState>("yashdani18@gmail.com");
-  const [password, setPassword] = useState<InputState>("pass123");
+  const [password, setPassword] = useState<InputState>("");
 
   const navigate = useNavigate();
 
@@ -60,7 +60,9 @@ const LoginComponent: React.FC = () => {
       <div className="container">
         <div className="login">
           <div className="row-username">
-            <h6 className="input-label mt-4">Username</h6>
+            <h6 className="input-label mt-4" data-testid="cypress-title-here">
+              Username
+            </h6>
             <input
               type="text"
               placeholder="Username"

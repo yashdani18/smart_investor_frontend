@@ -14,6 +14,26 @@ type User = {
   watchlist: Ticker[];
 };
 
+type QuarterlyData = {
+  quarters: [];
+  q_sales: [];
+  q_sales_percent: [];
+  q_expenses: [];
+  q_expenses_percent: [];
+  q_net_profit: [];
+  q_net_profit_percent: [];
+};
+
+type AnnualData = {
+  years: [];
+  a_sales: [];
+  a_sales_percent: [];
+  a_expenses: [];
+  a_expenses_percent: [];
+  a_net_profit: [];
+  a_net_profit_percent: [];
+};
+
 type Detail = {
   ticker: string;
   company_name: string;
@@ -29,8 +49,8 @@ type Detail = {
   roce: number;
   roe: number;
   fv: number;
-  quarterlyData: Object;
-  annualData: Object;
+  quarterlyData: QuarterlyData;
+  annualData: AnnualData;
 };
 
 const HomeComponent = () => {
@@ -91,7 +111,7 @@ const HomeComponent = () => {
   return (
     <>
       <NavbarComponent brand="Smart Investor" menu="Logout" />
-      <div className="flex justify-center">
+      <div className="flex justify-center text-black">
         <div className="home-content w-11/12 mt-20">
           <div className="heading-title-option flex">
             <div className="flex items-center">
@@ -114,7 +134,185 @@ const HomeComponent = () => {
             clearAll={clearAll}
             onTickerClick={onTickerClick}
           />
-          <div className="detail-content">{detail?.company_name}</div>
+          {detail && (
+            <div className="detail-content border-2 border-slate-700 px-2 pt-2 pb-12">
+              <h1 className="detail-title text-xl">Stock details</h1>
+              <div className="detail-basic-info flex">
+                <div className="flex-1 key-value">
+                  <h1 className="text-lg">Company</h1>
+                  <h1 className="text-md">
+                    {detail.company_name} {"(" + detail.ticker + ")"}
+                  </h1>
+                </div>
+                <div className="flex-1 key-value text-right">
+                  <h1 className="text-lg">Price</h1>
+                  <h1 className="text-md">
+                    <span>&#8377;</span>
+                    {" " + detail.price}
+                  </h1>
+                </div>
+                <div className="flex-1 key-value text-right">
+                  <h1 className="text-lg">Price Change</h1>
+                  <h1 className="text-md">{detail.change + "%"}</h1>
+                </div>
+              </div>
+              <div className="detail-results">
+                <div className="detail-result-q">
+                  <h1 className="text-lg text-center">Quarterly results</h1>
+                  <table className="table-auto w-full text-center">
+                    <thead>
+                      <th className="border-2 border-slate-700">Quarters</th>
+                      {detail.quarterlyData.quarters.map((quarter) => (
+                        <th key={quarter} className="border-2 border-slate-700">
+                          {quarter}
+                        </th>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {/* Sales */}
+                      <tr className="">
+                        <td className="">Sales</td>
+                        {detail.quarterlyData.q_sales.map((sales, index) => (
+                          <td key={index} className="cell pt-2">
+                            {sales}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className=""></td>
+                        {detail.quarterlyData.q_sales_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative ">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                      {/* Expenses */}
+                      <tr className="" style={{ margin: "4rem", padding: "10rem" }}>
+                        <td className="pt-12">Expenses</td>
+                        {detail.quarterlyData.q_expenses.map((expenses, index) => (
+                          <td key={index} className="cell pt-12">
+                            {expenses}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className=""></td>
+                        {detail.quarterlyData.q_expenses_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                      {/* Profit */}
+                      <tr className="mt-4" style={{ margin: "4rem", padding: "10rem" }}>
+                        <td className="pt-12">Profit</td>
+                        {detail.quarterlyData.q_net_profit.map((profit, index) => (
+                          <td key={index} className="cell pt-12">
+                            {profit}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* <tr className="border-b-2 border-slate-700"> */}
+                      <tr>
+                        <td className=""></td>
+                        {detail.quarterlyData.q_net_profit_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                {/* Annual Data */}
+                <div className="detail-result-q pt-12">
+                  <h1 className="text-lg text-center">Annual results</h1>
+                  <table className="table-auto w-full text-center">
+                    <thead>
+                      <th className="border-2 border-slate-700">Quarters</th>
+                      {detail.annualData.years.map((year) => (
+                        <th key={year} className="border-2 border-slate-700">
+                          {year}
+                        </th>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {/* Sales */}
+                      <tr className="">
+                        <td className="">Sales</td>
+                        {detail.annualData.a_sales.map((sales, index) => (
+                          <td key={index} className="cell pt-2">
+                            {sales}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className=""></td>
+                        {detail.annualData.a_sales_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative ">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                      {/* Expenses */}
+                      <tr className="" style={{ margin: "4rem", padding: "10rem" }}>
+                        <td className="pt-12">Expenses</td>
+                        {detail.annualData.a_expenses.map((expenses, index) => (
+                          <td key={index} className="cell pt-12">
+                            {expenses}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className=""></td>
+                        {detail.annualData.a_expenses_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                      {/* Profit */}
+                      <tr className="mt-4" style={{ margin: "4rem", padding: "10rem" }}>
+                        <td className="pt-12">Profit</td>
+                        {detail.annualData.a_net_profit.map((profit, index) => (
+                          <td key={index} className="cell pt-12">
+                            {profit}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* <tr className="border-b-2 border-slate-700"> */}
+                      <tr>
+                        <td className=""></td>
+                        {detail.annualData.a_net_profit_percent.map((percent, index) => (
+                          <td key={index} className="text-right relative">
+                            <span className={"absolute -right-4 " + (percent > 0 ? "text-green-500" : "text-red-500")}>
+                              {percent}
+                            </span>
+                          </td>
+                        ))}
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
