@@ -67,6 +67,7 @@ const HomeComponent = () => {
   const [user, setUser] = useState<User>(initialUser);
   const [detail, setDetail] = useState<Detail>();
   const [usersTickers, setUsersTickers] = useState<Ticker[]>([]);
+  const [selectedTicker, setSelectedTicker] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -103,6 +104,7 @@ const HomeComponent = () => {
       const response = await axios.get(`${rootURL}/api/detail/` + ticker);
       console.log(response.data);
       setDetail(response.data);
+      setSelectedTicker(ticker);
     } catch (error) {
       console.log(error);
     }
@@ -115,12 +117,12 @@ const HomeComponent = () => {
         <div className="home-content w-11/12 mt-20">
           <div className="heading-title-option flex">
             <div className="flex items-center">
-              <h1 className="flex-1 text-lg">Your Tickers</h1>
+              <h1 className="flex-1 text-lg"></h1>
             </div>
             <div className="flex-1 flex">
               <button
                 onClick={onManageTickers}
-                className="text-lg ml-auto bg-slate-700 text-slate-300 px-4 py-2 h-full"
+                className="text-lg ml-auto bg-slate-700 text-slate-100 px-4 py-2 h-full"
               >
                 Manage Tickers
               </button>
@@ -133,32 +135,35 @@ const HomeComponent = () => {
             onSave={onSave}
             clearAll={clearAll}
             onTickerClick={onTickerClick}
+            selectedTicker={selectedTicker}
           />
           {detail && (
             <div className="detail-content border-2 border-slate-700 px-2 pt-2 pb-12">
-              <h1 className="detail-title text-xl">Stock details</h1>
+              {/* <h1 className="detail-title text-xl">Stock details</h1> */}
               <div className="detail-basic-info flex">
                 <div className="flex-1 key-value">
-                  <h1 className="text-lg">Company</h1>
-                  <h1 className="text-md">
+                  <h1 className="text-xl">Company</h1>
+                  <h1 className="text-lg">
                     {detail.company_name} {"(" + detail.ticker + ")"}
                   </h1>
                 </div>
                 <div className="flex-1 key-value text-right">
-                  <h1 className="text-lg">Price</h1>
-                  <h1 className="text-md">
+                  <h1 className="text-xl">Price</h1>
+                  <h1 className="text-lg">
                     <span>&#8377;</span>
                     {" " + detail.price}
                   </h1>
                 </div>
                 <div className="flex-1 key-value text-right">
-                  <h1 className="text-lg">Price Change</h1>
-                  <h1 className="text-md">{detail.change + "%"}</h1>
+                  <h1 className="text-xl">Price Change</h1>
+                  <h1 className="text-lg">{detail.change + "%"}</h1>
                 </div>
               </div>
               <div className="detail-results">
                 <div className="detail-result-q">
-                  <h1 className="text-lg text-center">Quarterly results</h1>
+                  <h1 className="text-lg text-center m-2">
+                    <strong>Quarterly results</strong>
+                  </h1>
                   <table className="table-auto w-full text-center">
                     <thead>
                       <th className="border-2 border-slate-700">Quarters</th>
@@ -235,7 +240,9 @@ const HomeComponent = () => {
                 </div>
                 {/* Annual Data */}
                 <div className="detail-result-q pt-12">
-                  <h1 className="text-lg text-center">Annual results</h1>
+                  <h1 className="text-lg text-center m-2">
+                    <strong>Annual results</strong>
+                  </h1>
                   <table className="table-auto w-full text-center">
                     <thead>
                       <th className="border-2 border-slate-700">Years</th>

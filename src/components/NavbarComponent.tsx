@@ -20,7 +20,7 @@ const NavbarComponent = ({ brand, menu }: { brand: string; menu: string }) => {
     }
   };
   return (
-    <nav className="flex bg-slate-700 text-slate-300 px-4 py-4 fixed top-0 left-0 w-full">
+    <nav className="flex bg-slate-700 text-slate-100 px-4 py-4 fixed top-0 left-0 w-full">
       <div className="flex-1 navbar-brand">
         <h1 className="text-lg">{brand}</h1>
       </div>

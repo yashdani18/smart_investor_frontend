@@ -12,6 +12,7 @@ interface UsersTickerProps {
   onSave: () => void;
   clearAll: () => void;
   onTickerClick: (id: string) => void;
+  selectedTicker: string;
 }
 
 // const UsersTickers = ({ editable, usersTickers }: { editable: boolean; usersTickers: Ticker[] }) => {
@@ -22,6 +23,7 @@ const UsersTickers = ({
   onSave,
   clearAll,
   onTickerClick,
+  selectedTicker,
 }: UsersTickerProps) => {
   const handleOnSave = () => {
     onSave();
@@ -44,11 +46,12 @@ const UsersTickers = ({
       <div className="usersTickers border-2 border-slate-700 py-4 my-2">
         <div className="section-navbar flex">
           <div className="flex-1">
-            <h1 className="text-lg px-2 py-1">Your Tickers</h1>
+            <h1 className="text-xl px-2 py-1">Your Tickers</h1>
           </div>
           {editable && (
             <div className="flex-1 flex px-2">
               <div className="ml-auto">
+                {/* <button className="hover:cursor-default">Saved</button> */}
                 <button className="text-lg px-2 py-1 text-white bg-slate-700 mx-4" onClick={handleOnSave}>
                   Save
                 </button>
@@ -62,7 +65,13 @@ const UsersTickers = ({
         <div className="tickers flex flex-wrap">
           {usersTickers.map((ticker) => (
             <div key={ticker["_id"]} className="border-2 border-slate-700 m-2">
-              <button className="ticker py-2 px-8" onClick={() => handleTickerClick(ticker["ticker"])}>
+              <button
+                className={
+                  "ticker py-2 px-8 " +
+                  (selectedTicker === ticker["ticker"] ? "bg-slate-700 text-white" : "bg-white text-black")
+                }
+                onClick={() => handleTickerClick(ticker["ticker"])}
+              >
                 {ticker["ticker"]}
               </button>
               {editable && (

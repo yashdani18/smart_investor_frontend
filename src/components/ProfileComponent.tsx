@@ -100,12 +100,12 @@ const ProfileComponent: React.FC = () => {
     setUser(newUser);
   };
 
-  function printState() {
-    console.log(usersTickers);
-    console.log(availableTickers);
-    console.log(selected);
-    console.log(user);
-  }
+  // function printState() {
+  //   console.log(usersTickers);
+  //   console.log(availableTickers);
+  //   console.log(selected);
+  //   console.log(user);
+  // }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -156,6 +156,7 @@ const ProfileComponent: React.FC = () => {
         onSave={onSave}
         clearAll={clearAll}
         onTickerClick={onTickerClick}
+        selectedTicker=""
       />
       {/* <div className="usersTickers border-2 border-slate-700 py-4 my-2">
         <div className="section-navbar flex">
@@ -187,7 +188,7 @@ const ProfileComponent: React.FC = () => {
         </div>
       </div> */}
       <div className="availableTickers border-2 border-slate-700 px-2 py-4">
-        <h1 className="text-lg">Available Tickers</h1>
+        <h1 className="text-xl">Available Tickers</h1>
         <div className="tickers flex flex-wrap">
           {availableTickers.map((ticker, index) => (
             <div key={ticker["_id"]} className="border-2 border-slate-700 m-2">
@@ -204,7 +205,7 @@ const ProfileComponent: React.FC = () => {
           ))}
         </div>
       </div>
-      <button onClick={printState}>Print State</button>
+      {/* <button onClick={printState}>Print State</button> */}
     </div>
   );
 };
