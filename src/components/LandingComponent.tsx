@@ -1,7 +1,26 @@
 import NavbarComponent from "./NavbarComponent";
 import USP from "./USP";
+// import { useEffect } from "react";
+// import axios from "axios";
+
+// type Ticker = {
+//   _id: string;
+//   ticker: string;
+// };
 
 const LandingComponent = () => {
+  // useEffect(() => {
+  //   axios
+  //     .get("http://127.0.0.1:4000/api/ticker")
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       const tickers = response.data;
+  //       tickers.map((ticker: Ticker) => {
+  //         console.log(ticker["_id"], ticker["ticker"]);
+  //       });
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
   return (
     <div className="relative bg-slate-100">
       <NavbarComponent brand="Smart Investor" menu="Login" />

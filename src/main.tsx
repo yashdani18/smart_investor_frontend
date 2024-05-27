@@ -7,6 +7,7 @@ import LoginComponent from "./components/LoginComponent.tsx";
 import ProfileComponent from "./components/ProfileComponent.tsx";
 import HomeComponent from "./components/HomeComponent.tsx";
 import LandingComponent from "./components/LandingComponent.tsx";
+import SearchComponent from "./components/SearchComponent.tsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <HomeComponent />,
+  },
+  {
+    path: "/search",
+    element: <SearchComponent />,
   },
 ]);
 
