@@ -46,6 +46,7 @@ Start the development server:
 ## Screenshots
 
 <!-- ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here) -->
+<img src="docs/homepage.png" width="400px">
 
 ## 🔗 Links
 
