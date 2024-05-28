@@ -64,6 +64,8 @@ const SearchComponent = () => {
       ? import.meta.env.VITE_APP_LOCAL_ROOT_URL
       : import.meta.env.VITE_APP_SERVER_ROOT_URL;
 
+  console.log("SearchComponent");
+
   console.log(rootURL);
 
   const [currentTicker, setCurrentTicker] = useState<string>("");
