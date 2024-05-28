@@ -46,7 +46,12 @@ Start the development server:
 ## Screenshots
 
 <!-- ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here) -->
-<img src="docs/homepage.png" width="400px">
+<img src="docs/homepage.png" width="800px">
+<img src="docs/mainpage_blank.png" width="800px">
+<img src="docs/mainpage_select.png" width="800px">
+<img src="docs/mainpage_ratios.png" width="800px">
+<img src="docs/mainpage_results.png" width="800px">
+<img src="docs/mainpage_concall.png" width="800px">
 
 ## 🔗 Links
 
