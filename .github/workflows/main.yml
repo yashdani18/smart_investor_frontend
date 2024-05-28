@@ -26,4 +26,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f si-frontend-container
       - name: Run Docker container
-        run: docker run -d -p 3000:80 --name si-frontend-container yashdani27/si_frontend:latest
+        run: docker run -d -p 3000:80 --name si-frontend-container -e VITE_APP_ENV='production' -e VITE_APP_SERVER_ROOT_URL='${{ secrets.VITE_APP_SERVER_ROOT_URL }}' yashdani27/si_frontend:latest
