@@ -1,3 +1,6 @@
+/**
+ * Type definitions mapping to content in database
+ */
 type RangeTableRow = {
   key: string;
   value: string;
@@ -43,7 +46,7 @@ type CustomProps = {
 const ResultsComponent = ({ detail }: CustomProps) => {
   return (
     <>
-      <div className="detail-results px-4 pb-12">
+      <div className="detail-results px-4 pb-2">
         <div className="detail-result-q">
           <h1 className="text-lg text-center m-2">Quarterly results</h1>
           <table className="table-auto w-full text-center">
@@ -202,6 +205,14 @@ const ResultsComponent = ({ detail }: CustomProps) => {
             </tbody>
           </table>
         </div>
+        <h1 className="text-sm mt-12">
+          <em>
+            Powered by{" "}
+            <a href="https://www.screener.in/" target="blank">
+              Screener
+            </a>
+          </em>
+        </h1>
       </div>
     </>
   );

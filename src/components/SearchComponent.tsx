@@ -5,7 +5,11 @@ import { MoonLoader } from "react-spinners";
 import ResultsComponent from "./ResultsComponent";
 import RatiosComponent from "./RatiosComponent";
 import ConcallAnalysisComponent from "./ConcallAnalysisComponent";
+import FinancialScoreComponent from "./FinancialScoreComponent";
 
+/**
+ * Type definitions mapping to content in database
+ */
 type Ratios = {
   ticker: string;
   price: number;
@@ -86,17 +90,11 @@ const SearchComponent = () => {
       ? import.meta.env.VITE_APP_LOCAL_ROOT_URL
       : import.meta.env.VITE_APP_SERVER_ROOT_URL;
 
-  console.log("SearchComponent");
-  // console.log(import.meta.env.VITE_APP_ENV);
-  // console.log(import.meta.env.VITE_APP_LOCAL_ROOT_URL);
-  // console.log(import.meta.env.VITE_APP_SERVER_ROOT_URL);
-  // console.log(rootURL);
-
   const [currentTicker, setCurrentTicker] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
-  // const [matchingTickers, setMatchingTickers] = useState<string[]>([]);
+
   const [isError, setIsError] = useState<boolean>(false);
-  // const [data, setData] = useState<Ratios>();
+
   const [ratios, setRatios] = useState<Ratios>();
   const [allRatios, setAllRatios] = useState<Ratios[]>([]);
 
@@ -111,41 +109,22 @@ const SearchComponent = () => {
 
   const [fetchingData, setFetchingData] = useState<boolean>(false);
 
+  /**
+   *
+   * @param delay - Positive number denoting time in ms
+   * @returns a promise that would resolve in 'delay' ms
+   */
   function timeout(delay: number) {
     return new Promise((res) => setTimeout(res, delay));
   }
 
-  // const handleSubmit = async (ticker: string) => {
-  //   console.log(ticker);
-  //   if (tickerIsValid(ticker)) {
-  //     setFetchingData(true);
-  //     axios
-  //       .get("http://127.0.0.1:4000/api/ticker/results/" + ticker)
-  //       .then(async (response) => {
-  //         await timeout(1000);
-  //         console.log(response.data);
-  //         setFetchingData(false);
-  //       })
-  //       .catch((error) => console.log(error));
-  //   }
-  //   //  else {
-  //   //   setErrorMessage("Invalid Ticker");
-  //   //   await timeout(2000);
-  //   //   setErrorMessage("");
-  //   // }
-  // };
-
-  const tickerIsValid = (ticker: string) => {
-    return top_10_it_companies.includes(ticker);
-  };
-
-  // const handleInputTickerChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   event.preventDefault();
-  //   setInputTicker(event.target.value);
-  // };
-
+  /**
+   * Fetches summary score for a given stock ticker
+   *
+   * @param ticker - Stock ticker for fetching data
+   * @param index - positive number indicating position in list
+   */
   const onTickerSelect = async (ticker: string, index: number) => {
-    console.log(ticker);
     setCurrentTicker(ticker);
     setCurrentIndex(index);
 
@@ -153,6 +132,7 @@ const SearchComponent = () => {
     setResults(undefined);
     setConcallAnalysis(undefined);
 
+    // Show cached results if data is already fetched
     if (allRatios[index] !== undefined) {
       setRatios(allRatios[index]);
     }
@@ -170,60 +150,28 @@ const SearchComponent = () => {
     }
 
     if (allFinancialScores[index] === undefined) {
-      console.log("Making request...");
-      if (tickerIsValid(ticker)) {
-        setFetchingData(true);
-        setFinancialScore(undefined);
-        axios
-          .get(`${rootURL}/api/ticker/score/` + ticker)
-          .then(async (response) => {
-            await timeout(1000);
-            console.log(response.data);
-            setFetchingData(false);
-
-            setFinancialScore(response.data);
-
-            let newAllScores = [...allFinancialScores];
-            newAllScores[index] = response.data;
-            setAllFinancialScores(newAllScores);
-          })
-          .catch((error) => console.log(error));
-      }
+      setFetchingData(true);
+      setFinancialScore(undefined);
+      axios
+        .get(`${rootURL}/api/ticker/score/` + ticker)
+        .then(async (response) => {
+          await timeout(1000);
+          setFetchingData(false);
+          setFinancialScore(response.data);
+          let newAllScores = [...allFinancialScores];
+          newAllScores[index] = response.data;
+          setAllFinancialScores(newAllScores);
+        })
+        .catch(() => console.log("error"));
     } else {
-      console.log("Fetching from cache");
       setFinancialScore(allFinancialScores[index]);
-      // setResults(allResults[index]);
     }
-
-    // console.log(allRatios[index]);
-
-    // if (allRatios[index] === undefined) {
-    //   console.log("Making request...");
-    //   if (tickerIsValid(ticker)) {
-    //     setFetchingData(true);
-    //     setRatios(undefined);
-    //     axios
-    //       .get(`${rootURL}/api/ticker/ratios/` + ticker)
-    //       .then(async (response) => {
-    //         await timeout(1000);
-    //         console.log(response.data);
-    //         setFetchingData(false);
-
-    //         setRatios(response.data);
-
-    //         let newAllRatios = [...allRatios];
-    //         newAllRatios[index] = response.data;
-    //         setAllRatios(newAllRatios);
-    //       })
-    //       .catch((error) => console.log(error));
-    //   }
-    // } else {
-    //   console.log("Fetching from cache");
-    //   setRatios(allRatios[index]);
-    //   // setResults(allResults[index]);
-    // }
   };
 
+  /**
+   * Fetches fundamental ratios for the currently selected ticker
+   * @returns void
+   */
   const onFetchRatios = async () => {
     if (currentTicker === "") {
       setIsError(true);
@@ -232,32 +180,30 @@ const SearchComponent = () => {
       return;
     }
     if (allRatios[currentIndex] === undefined) {
-      console.log("Making request...");
-      if (tickerIsValid(currentTicker)) {
-        setFetchingData(true);
-        setRatios(undefined);
-        axios
-          .get(`${rootURL}/api/ticker/ratios/` + currentTicker)
-          .then(async (response) => {
-            await timeout(1000);
-            console.log(response.data);
-            setFetchingData(false);
+      setFetchingData(true);
+      setRatios(undefined);
+      axios
+        .get(`${rootURL}/api/ticker/ratios/` + currentTicker)
+        .then(async (response) => {
+          await timeout(1000);
+          setFetchingData(false);
+          setRatios(response.data);
 
-            setRatios(response.data);
-
-            let newAllRatios = [...allRatios];
-            newAllRatios[currentIndex] = response.data;
-            setAllRatios(newAllRatios);
-          })
-          .catch((error) => console.log(error));
-      }
+          let newAllRatios = [...allRatios];
+          newAllRatios[currentIndex] = response.data;
+          setAllRatios(newAllRatios);
+        })
+        .catch(() => console.log("Error"));
     } else {
-      console.log("Fetching from cache");
       setRatios(allRatios[currentIndex]);
       // setResults(allResults[index]);
     }
   };
 
+  /**
+   * Fetches financial results for the currently selected ticker
+   * @returns void
+   */
   const onFetchResults = async () => {
     if (currentTicker === "") {
       setIsError(true);
@@ -266,30 +212,30 @@ const SearchComponent = () => {
       return;
     }
     if (allResults[currentIndex] === undefined) {
-      console.log("Making request...");
-      if (tickerIsValid(currentTicker)) {
-        setFetchingData(true);
-        setResults(undefined);
-        axios
-          .get(`${rootURL}/api/ticker/results/` + currentTicker)
-          .then(async (response) => {
-            await timeout(1000);
-            console.log(response.data);
-            setFetchingData(false);
+      setFetchingData(true);
+      setResults(undefined);
+      axios
+        .get(`${rootURL}/api/ticker/results/` + currentTicker)
+        .then(async (response) => {
+          await timeout(1000);
+          setFetchingData(false);
 
-            setResults(response.data);
+          setResults(response.data);
 
-            let newAllResults = [...allResults];
-            newAllResults[currentIndex] = response.data;
-            setAllResults(newAllResults);
-          })
-          .catch((error) => console.log(error));
-      }
+          let newAllResults = [...allResults];
+          newAllResults[currentIndex] = response.data;
+          setAllResults(newAllResults);
+        })
+        .catch(() => console.log("error"));
     } else {
       setResults(allResults[currentIndex]);
     }
   };
 
+  /**
+   * Fetches conference call analysis for the currently selected ticker
+   * @returns void
+   */
   const onFetchConcallAnalysis = async () => {
     if (currentTicker === "") {
       setIsError(true);
@@ -298,30 +244,29 @@ const SearchComponent = () => {
       return;
     }
     if (allConcallAnalysis[currentIndex] === undefined) {
-      console.log("Making request...");
-      if (tickerIsValid(currentTicker)) {
-        setFetchingData(true);
-        setConcallAnalysis(undefined);
-        axios
-          .get(`${rootURL}/api/ticker/analysis/` + currentTicker)
-          .then(async (response) => {
-            await timeout(1000);
-            console.log(response.data);
-            setFetchingData(false);
+      setFetchingData(true);
+      setConcallAnalysis(undefined);
+      axios
+        .get(`${rootURL}/api/ticker/analysis/` + currentTicker)
+        .then(async (response) => {
+          await timeout(1000);
+          setFetchingData(false);
 
-            setConcallAnalysis(response.data);
+          setConcallAnalysis(response.data);
 
-            let newAllConcallAnalysis = [...allConcallAnalysis];
-            newAllConcallAnalysis[currentIndex] = response.data;
-            setAllConcallAnalysis(newAllConcallAnalysis);
-          })
-          .catch((error) => console.log(error));
-      }
+          let newAllConcallAnalysis = [...allConcallAnalysis];
+          newAllConcallAnalysis[currentIndex] = response.data;
+          setAllConcallAnalysis(newAllConcallAnalysis);
+        })
+        .catch(() => console.log("error"));
     } else {
       setConcallAnalysis(allConcallAnalysis[currentIndex]);
     }
   };
 
+  /**
+   * Initializes arrays to hold data for already fulfilled requests
+   */
   useEffect(() => {
     setAllRatios(new Array(top_10_it_companies.length));
     setAllResults(new Array(top_10_it_companies.length));
@@ -329,55 +274,10 @@ const SearchComponent = () => {
     setAllFinancialScores(new Array(top_10_it_companies.length));
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Input Ticker:", inputTicker);
-  //   if (inputTicker.length >= 3) {
-  //     const matches = symbols.filter((symbol) => symbol.startsWith(inputTicker));
-  //     setMatchingTickers(matches);
-  //     console.log(matches);
-  //   } else {
-  //     setMatchingTickers([]);
-  //     setData("");
-  //   }
-  // }, [inputTicker]);
-
-  const onPrintState = () => {
-    console.log(allRatios);
-  };
-
   return (
     <div className="container">
-      <div className="">
-        {/* <div className="section-search mt-8 text-lg">
-          <div className="flex flex-row">
-            <div className="searchbox basis-3/4 mr-2">
-              <input
-                type="text"
-                placeholder="Enter ticker"
-                className="border-b-2 border-slate-700 w-full p-4"
-                value={inputTicker}
-                onChange={handleInputTickerChange}
-              />
-            </div>
-            <div className="submit-button basis-1/4 ml-2">
-              <button className="w-full p-4 bg-slate-700 text-white" onClick={handleSubmit}>
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-        {errorMessage.length > 0 && <h1 className="error-message text-center mt-2 text-red-500">{errorMessage}</h1>}
-        <div className="section-matches mt-2 p-2">
-          <h1 className="text-lg mb-2">Available Tickers</h1>
-          <div className="matching-tickers flex space-x-2">
-            {matchingTickers.length > 0 &&
-              matchingTickers.map((ticker) => (
-                <button key={ticker} onClick={() => onTickerSelect(ticker)} className="border-2 border-slate-700 p-2">
-                  {ticker}
-                </button>
-              ))}
-          </div>
-        </div> */}
+      <div>
+        {/* Section to display the top 10 tickers in IT industry */}
         <div className="section-tickers flex justify-center border-2 border-slate-700 px-4 pt-2 pb-4 m-4">
           <div className="section-content">
             <h1 className="text-xl mb-2 ml-2">
@@ -400,40 +300,23 @@ const SearchComponent = () => {
             </div>
           </div>
         </div>
+        {/* Section to display progress bar for data fetching */}
         {fetchingData && (
           <div className="flex justify-center">
             <MoonLoader color="#36d7b7" loading={fetchingData} speedMultiplier={0.5} />
           </div>
         )}
+        {/* Section to display financial score for selected ticker */}
         {financialScore && (
           <div className="section-ratios m-4 border-2 border-slate-700">
-            <div className="header flex m-4">
-              <div className="basis-3/4">
-                <div>
-                  <h1 className="text-center text-lg">Summary</h1>
-                  <h1 className="flex-1 text-md my-2 flex items-center">{financialScore["score"]["reason"]}</h1>
-                </div>
-                <h1 className="flex-1 text-sm my-2 flex items-center text-red-500">
-                  {"Caution: " + financialScore["caution"]}
-                </h1>
-                <h1 className="text-sm">
-                  <em>Based on fundamental ratios and financial results. Score out of 10.</em>
-                </h1>
-              </div>
-              <div className="basis-1/4 flex justify-center items-center">
-                <div className="flex justify-center">
-                  <button
-                    className="border-2 border-slate-700 score w-32 h-32 text-6xl"
-                    style={{ borderRadius: "50%" }}
-                  >
-                    {financialScore["score"]["value"]}
-                  </button>
-                  {/* <h1 className="text-xs text-center">Based on ratios and results</h1> */}
-                </div>
-              </div>
-            </div>
+            <FinancialScoreComponent
+              score={financialScore["score"]["value"]}
+              reason={financialScore["score"]["reason"]}
+              caution={financialScore["caution"]}
+            />
           </div>
         )}
+        {/* Section to display fundamental ratios for selected ticker */}
         {!ratios && (
           <div className="bg-slate-700 text-white p-2 m-4 text-center">
             <button onClick={onFetchRatios}>Fetch Ratios</button>
@@ -444,6 +327,7 @@ const SearchComponent = () => {
             <RatiosComponent ratios={ratios} />
           </div>
         )}
+        {/* Section to display financial results for selected ticker */}
         {!results && (
           <div className="bg-slate-700 text-white p-2 m-4 text-center">
             <button onClick={onFetchResults}>Fetch Results</button>
@@ -459,6 +343,7 @@ const SearchComponent = () => {
             <ResultsComponent detail={results} />
           </div>
         )}
+        {/* Section to display concall analysis for selected ticker */}
         {!concallAnalysis && (
           <div className="bg-slate-700 text-white p-2 m-4 text-center">
             <button onClick={onFetchConcallAnalysis}>Fetch Concall Analysis</button>
@@ -466,12 +351,10 @@ const SearchComponent = () => {
         )}
         {concallAnalysis && (
           <div className="section-ratios m-4">
-            {/* <RatiosComponent ratios={ratios} /> */}
             <ConcallAnalysisComponent analysis={concallAnalysis} />
           </div>
         )}
       </div>
-      <button onClick={onPrintState}>Print State</button>
     </div>
   );
 };

@@ -1,5 +1,8 @@
 import Tile from "./Tile";
 
+/**
+ * Type definitions mapping to content in database
+ */
 type Ratios = {
   ticker: string;
   price: number;
@@ -60,6 +63,14 @@ const RatiosComponent = ({ ratios }: RatiosProps) => {
             <Tile key1="CFO/PAT" val1={(ratios["cfo"] / ratios["pat"]).toFixed(2) + ""} key2="" val2={""} />
           </div>
         </div>
+        <h1 className="text-sm mx-4 mt-4">
+          <em>
+            Powered by{" "}
+            <a href="https://www.screener.in/" target="blank">
+              Screener
+            </a>
+          </em>
+        </h1>
       </div>
     </>
   );

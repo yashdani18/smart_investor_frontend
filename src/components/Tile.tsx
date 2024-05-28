@@ -1,3 +1,6 @@
+/**
+ * Type definition
+ */
 type TileProps = {
   key1: string;
   val1: string;
