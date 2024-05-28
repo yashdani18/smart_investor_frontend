@@ -23,7 +23,7 @@ const RatiosComponent = ({ ratios }: RatiosProps) => {
   return (
     <>
       <div className="content-ratios pb-4 border-2 border-slate-700">
-        <h1 className="text-xl text-center mt-4">{ratios["ticker"]}</h1>
+        {/* <h1 className="text-xl text-center mt-4">{ratios["ticker"]}</h1> */}
         {/* <div className="ss-deviation-box flex justify-center px-4">
     <div className="ss-deviation-content w-96">
       <h1 className="text-lg text-center m-2">Deviation from 52-week high</h1>
@@ -35,7 +35,7 @@ const RatiosComponent = ({ ratios }: RatiosProps) => {
     </div>
   </div> */}
         <div className="ss-valuation">
-          <h1 className="text-lg text-center m-2">Valuation Ratios</h1>
+          <h1 className="text-lg text-center m-2 mt-4">Valuation Ratios</h1>
           <div className="tiles-valuation flex flex-col lg:flex-row m-2">
             <Tile
               key1="Price"

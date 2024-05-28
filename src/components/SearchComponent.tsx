@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
 import ResultsComponent from "./ResultsComponent";
 import RatiosComponent from "./RatiosComponent";
+import ConcallAnalysisComponent from "./ConcallAnalysisComponent";
 
 type Ratios = {
   ticker: string;
@@ -58,6 +59,27 @@ type Results = {
   latest_concall_transcript: string;
 };
 
+type Critera = {
+  title: string;
+  text: string;
+};
+
+type Score = {
+  value: string;
+  reason: string;
+};
+
+type ConcallAnalysis = {
+  criteria: Critera[];
+  caution: string;
+  score: Score;
+};
+
+type FinancialScore = {
+  caution: string;
+  score: Score;
+};
+
 const SearchComponent = () => {
   const rootURL =
     import.meta.env.VITE_APP_ENV === "development"
@@ -65,21 +87,27 @@ const SearchComponent = () => {
       : import.meta.env.VITE_APP_SERVER_ROOT_URL;
 
   console.log("SearchComponent");
-  console.log(import.meta.env.VITE_APP_ENV);
-  console.log(import.meta.env.VITE_APP_LOCAL_ROOT_URL);
-  console.log(import.meta.env.VITE_APP_SERVER_ROOT_URL);
-  console.log(rootURL);
+  // console.log(import.meta.env.VITE_APP_ENV);
+  // console.log(import.meta.env.VITE_APP_LOCAL_ROOT_URL);
+  // console.log(import.meta.env.VITE_APP_SERVER_ROOT_URL);
+  // console.log(rootURL);
 
   const [currentTicker, setCurrentTicker] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   // const [matchingTickers, setMatchingTickers] = useState<string[]>([]);
-  // const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
   // const [data, setData] = useState<Ratios>();
   const [ratios, setRatios] = useState<Ratios>();
   const [allRatios, setAllRatios] = useState<Ratios[]>([]);
 
   const [results, setResults] = useState<Results>();
   const [allResults, setAllResults] = useState<Results[]>([]);
+
+  const [concallAnalysis, setConcallAnalysis] = useState<ConcallAnalysis>();
+  const [allConcallAnalysis, setAllConcallAnalysis] = useState<ConcallAnalysis[]>([]);
+
+  const [financialScore, setFinancialScore] = useState<FinancialScore>();
+  const [allFinancialScores, setAllFinancialScores] = useState<FinancialScore[]>([]);
 
   const [fetchingData, setFetchingData] = useState<boolean>(false);
 
@@ -123,16 +151,93 @@ const SearchComponent = () => {
 
     setRatios(undefined);
     setResults(undefined);
+    setConcallAnalysis(undefined);
 
-    console.log(allRatios[index]);
+    if (allRatios[index] !== undefined) {
+      setRatios(allRatios[index]);
+    }
 
-    if (allRatios[index] === undefined) {
+    if (allResults[index] !== undefined) {
+      setResults(allResults[index]);
+    }
+
+    if (allConcallAnalysis[index] !== undefined) {
+      setConcallAnalysis(allConcallAnalysis[index]);
+    }
+
+    if (allFinancialScores[index] !== undefined) {
+      setFinancialScore(allFinancialScores[index]);
+    }
+
+    if (allFinancialScores[index] === undefined) {
       console.log("Making request...");
       if (tickerIsValid(ticker)) {
         setFetchingData(true);
+        setFinancialScore(undefined);
+        axios
+          .get(`${rootURL}/api/ticker/score/` + ticker)
+          .then(async (response) => {
+            await timeout(1000);
+            console.log(response.data);
+            setFetchingData(false);
+
+            setFinancialScore(response.data);
+
+            let newAllScores = [...allFinancialScores];
+            newAllScores[index] = response.data;
+            setAllFinancialScores(newAllScores);
+          })
+          .catch((error) => console.log(error));
+      }
+    } else {
+      console.log("Fetching from cache");
+      setFinancialScore(allFinancialScores[index]);
+      // setResults(allResults[index]);
+    }
+
+    // console.log(allRatios[index]);
+
+    // if (allRatios[index] === undefined) {
+    //   console.log("Making request...");
+    //   if (tickerIsValid(ticker)) {
+    //     setFetchingData(true);
+    //     setRatios(undefined);
+    //     axios
+    //       .get(`${rootURL}/api/ticker/ratios/` + ticker)
+    //       .then(async (response) => {
+    //         await timeout(1000);
+    //         console.log(response.data);
+    //         setFetchingData(false);
+
+    //         setRatios(response.data);
+
+    //         let newAllRatios = [...allRatios];
+    //         newAllRatios[index] = response.data;
+    //         setAllRatios(newAllRatios);
+    //       })
+    //       .catch((error) => console.log(error));
+    //   }
+    // } else {
+    //   console.log("Fetching from cache");
+    //   setRatios(allRatios[index]);
+    //   // setResults(allResults[index]);
+    // }
+  };
+
+  const onFetchRatios = async () => {
+    if (currentTicker === "") {
+      setIsError(true);
+      await timeout(3000);
+      setIsError(false);
+      return;
+    }
+    if (allRatios[currentIndex] === undefined) {
+      console.log("Making request...");
+      if (tickerIsValid(currentTicker)) {
+        setFetchingData(true);
         setRatios(undefined);
         axios
-          .get(`${rootURL}/api/ticker/ratios/` + ticker)
+          .get(`${rootURL}/api/ticker/ratios/` + currentTicker)
           .then(async (response) => {
             await timeout(1000);
             console.log(response.data);
@@ -141,19 +246,25 @@ const SearchComponent = () => {
             setRatios(response.data);
 
             let newAllRatios = [...allRatios];
-            newAllRatios[index] = response.data;
+            newAllRatios[currentIndex] = response.data;
             setAllRatios(newAllRatios);
           })
           .catch((error) => console.log(error));
       }
     } else {
       console.log("Fetching from cache");
-      setRatios(allRatios[index]);
-      setResults(allResults[index]);
+      setRatios(allRatios[currentIndex]);
+      // setResults(allResults[index]);
     }
   };
 
   const onFetchResults = async () => {
+    if (currentTicker === "") {
+      setIsError(true);
+      await timeout(3000);
+      setIsError(false);
+      return;
+    }
     if (allResults[currentIndex] === undefined) {
       console.log("Making request...");
       if (tickerIsValid(currentTicker)) {
@@ -174,12 +285,48 @@ const SearchComponent = () => {
           })
           .catch((error) => console.log(error));
       }
+    } else {
+      setResults(allResults[currentIndex]);
+    }
+  };
+
+  const onFetchConcallAnalysis = async () => {
+    if (currentTicker === "") {
+      setIsError(true);
+      await timeout(3000);
+      setIsError(false);
+      return;
+    }
+    if (allConcallAnalysis[currentIndex] === undefined) {
+      console.log("Making request...");
+      if (tickerIsValid(currentTicker)) {
+        setFetchingData(true);
+        setConcallAnalysis(undefined);
+        axios
+          .get(`${rootURL}/api/ticker/analysis/` + currentTicker)
+          .then(async (response) => {
+            await timeout(1000);
+            console.log(response.data);
+            setFetchingData(false);
+
+            setConcallAnalysis(response.data);
+
+            let newAllConcallAnalysis = [...allConcallAnalysis];
+            newAllConcallAnalysis[currentIndex] = response.data;
+            setAllConcallAnalysis(newAllConcallAnalysis);
+          })
+          .catch((error) => console.log(error));
+      }
+    } else {
+      setConcallAnalysis(allConcallAnalysis[currentIndex]);
     }
   };
 
   useEffect(() => {
     setAllRatios(new Array(top_10_it_companies.length));
     setAllResults(new Array(top_10_it_companies.length));
+    setAllConcallAnalysis(new Array(top_10_it_companies.length));
+    setAllFinancialScores(new Array(top_10_it_companies.length));
   }, []);
 
   // useEffect(() => {
@@ -233,13 +380,19 @@ const SearchComponent = () => {
         </div> */}
         <div className="section-tickers flex justify-center border-2 border-slate-700 px-4 pt-2 pb-4 m-4">
           <div className="section-content">
-            <h1 className="text-xl mb-2 ml-2">Available Tickers</h1>
+            <h1 className="text-xl mb-2 ml-2">
+              Available Tickers{" "}
+              {isError ? <span className="text-sm text-red-500">(Please select a ticker to proceed)</span> : <></>}
+            </h1>
             <div className="flex flex-row flex-wrap">
               {top_10_it_companies.map((ticker, index) => (
                 <button
                   key={ticker}
                   onClick={() => onTickerSelect(ticker, index)}
-                  className="border-2 border-slate-700 px-4 py-2 m-2"
+                  className={
+                    "border-2 border-slate-700 px-4 py-2 m-2 " +
+                    (currentTicker === ticker ? "bg-slate-700 text-white" : "bg-white text-black")
+                  }
                 >
                   {ticker}
                 </button>
@@ -247,15 +400,51 @@ const SearchComponent = () => {
             </div>
           </div>
         </div>
-        <div className="section-ratios m-4">
-          {fetchingData && (
-            <div className="flex justify-center">
-              <MoonLoader color="#36d7b7" loading={fetchingData} speedMultiplier={0.5} />
+        {fetchingData && (
+          <div className="flex justify-center">
+            <MoonLoader color="#36d7b7" loading={fetchingData} speedMultiplier={0.5} />
+          </div>
+        )}
+        {financialScore && (
+          <div className="section-ratios m-4 border-2 border-slate-700">
+            <div className="header flex m-4">
+              <div className="basis-3/4">
+                <div>
+                  <h1 className="text-center text-lg">Summary</h1>
+                  <h1 className="flex-1 text-md my-2 flex items-center">{financialScore["score"]["reason"]}</h1>
+                </div>
+                <h1 className="flex-1 text-sm my-2 flex items-center text-red-500">
+                  {"Caution: " + financialScore["caution"]}
+                </h1>
+                <h1 className="text-sm">
+                  <em>Based on fundamental ratios and financial results. Score out of 10.</em>
+                </h1>
+              </div>
+              <div className="basis-1/4 flex justify-center items-center">
+                <div className="flex justify-center">
+                  <button
+                    className="border-2 border-slate-700 score w-32 h-32 text-6xl"
+                    style={{ borderRadius: "50%" }}
+                  >
+                    {financialScore["score"]["value"]}
+                  </button>
+                  {/* <h1 className="text-xs text-center">Based on ratios and results</h1> */}
+                </div>
+              </div>
             </div>
-          )}
-          {ratios && <RatiosComponent ratios={ratios} />}
-        </div>
-        {ratios && !results && (
+          </div>
+        )}
+        {!ratios && (
+          <div className="bg-slate-700 text-white p-2 m-4 text-center">
+            <button onClick={onFetchRatios}>Fetch Ratios</button>
+          </div>
+        )}
+        {ratios && (
+          <div className="section-ratios m-4">
+            <RatiosComponent ratios={ratios} />
+          </div>
+        )}
+        {!results && (
           <div className="bg-slate-700 text-white p-2 m-4 text-center">
             <button onClick={onFetchResults}>Fetch Results</button>
           </div>
@@ -268,6 +457,17 @@ const SearchComponent = () => {
               </div>
             )}
             <ResultsComponent detail={results} />
+          </div>
+        )}
+        {!concallAnalysis && (
+          <div className="bg-slate-700 text-white p-2 m-4 text-center">
+            <button onClick={onFetchConcallAnalysis}>Fetch Concall Analysis</button>
+          </div>
+        )}
+        {concallAnalysis && (
+          <div className="section-ratios m-4">
+            {/* <RatiosComponent ratios={ratios} /> */}
+            <ConcallAnalysisComponent analysis={concallAnalysis} />
           </div>
         )}
       </div>
