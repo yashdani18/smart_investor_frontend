@@ -335,11 +335,6 @@ const SearchComponent = () => {
         )}
         {results && (
           <div className="section-results m-4 border-2 border-slate-700">
-            {fetchingData && (
-              <div className="flex justify-center">
-                <MoonLoader color="#36d7b7" loading={fetchingData} speedMultiplier={0.5} />
-              </div>
-            )}
             <ResultsComponent detail={results} />
           </div>
         )}

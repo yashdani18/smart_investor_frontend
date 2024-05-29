@@ -1,4 +1,4 @@
-# Smart Investor
+# Smart Investor (React w/ Typescript)
 
 The motivation for this project was to develop a stock
 analysis engine that would aggregate data from multiple web
@@ -9,6 +9,8 @@ sources and present it in an easy-to-understand way.
 - Track Equities
 - Visualize Growth Numbers
 - Compare Industry Peers
+
+With intelligent commentary powered by gpt-4
 
 ## Installation and Setup
 
@@ -46,6 +48,12 @@ Start the development server:
 ## Screenshots
 
 <!-- ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here) -->
+<img src="docs/homepage.png" width="800px">
+<img src="docs/mainpage_blank.png" width="800px">
+<img src="docs/mainpage_select.png" width="800px">
+<img src="docs/mainpage_ratios.png" width="800px">
+<img src="docs/mainpage_results.png" width="800px">
+<img src="docs/mainpage_concall.png" width="800px">
 
 ## 🔗 Links
 
